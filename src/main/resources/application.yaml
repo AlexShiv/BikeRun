@@ -1,0 +1,26 @@
+server:
+  port: 7788
+
+spring:
+  datasource:
+    username: postgres
+    password: 11111
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    properties.hibernate.temp.use_jdbc_metadata_defaults: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      use-new-id-generator-mappings: true
+
+logging:
+  level:
+    org.springframework.web: ERROR
+    ru.baccasoft.bikerun: DEBUG
+  file: logs/application.log
+  file.max-size: 2MB
+
+
