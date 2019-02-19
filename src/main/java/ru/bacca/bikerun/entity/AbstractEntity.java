@@ -11,7 +11,7 @@ public abstract class AbstractEntity implements Serializable {
     }
 
     @Id
-    @Column(name = "id")
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.TABLE)
     protected long id = 0L;
 

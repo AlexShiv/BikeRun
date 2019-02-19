@@ -1,8 +1,8 @@
 package ru.bacca.bikerun.service;
 
-import org.springframework.stereotype.Service;
 import ru.bacca.bikerun.entity.User;
 import ru.bacca.bikerun.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService extends GenericServiceImpl<User, UserRepository> {
