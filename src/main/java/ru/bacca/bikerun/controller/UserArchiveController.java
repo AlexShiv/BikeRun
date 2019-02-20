@@ -1,9 +1,11 @@
 package ru.bacca.bikerun.controller;
 
-import ru.bacca.bikerun.entity.UserArchive;
-import ru.bacca.bikerun.service.UserArchiveService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.bacca.bikerun.entity.UserArchive;
+import ru.bacca.bikerun.service.UserArchiveService;
 
 import java.util.List;
 
@@ -15,9 +17,9 @@ public class UserArchiveController extends GenericController<UserArchive, UserAr
         super(service);
     }
 
-    @Override
-    public List<UserArchive> getAll() {
-
-        return super.getAll();
+    @GetMapping("/ga")
+    @PreAuthorize("hasRole('client')")
+    public List<UserArchive> getAlll() {
+        return getService().getAll();
     }
 }
