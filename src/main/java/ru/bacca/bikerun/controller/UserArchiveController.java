@@ -18,7 +18,7 @@ public class UserArchiveController extends GenericController<UserArchive, UserAr
     }
 
     @GetMapping("/ga")
-    @PreAuthorize("hasRole('client')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public List<UserArchive> getAlll() {
         return getService().getAll();
     }

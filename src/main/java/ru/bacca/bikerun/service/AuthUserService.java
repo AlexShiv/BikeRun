@@ -10,4 +10,12 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
     public AuthUserService(AuthUserRepository abstractJpaRepository) {
         super(abstractJpaRepository);
     }
+
+    public AuthUser findByUsername(String username) {
+        return repository.findByUsername(username);
+    }
+
+    public boolean existsByUsername(String username) {
+        return repository.existsByUsername(username);
+    }
 }
