@@ -23,4 +23,16 @@ logging:
   file: logs/application.log
   file.max-size: 2MB
 
+security:
+  jwt:
+    token:
+      secret-key: SecretKeyToGenJWTs
+      expire-length: 3600000
+
+ru:
+  baccasoft:
+    filter:
+      excluded:
+        - /auth/signin
+        - /auth/signup
 

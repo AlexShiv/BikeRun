@@ -9,6 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.bacca.bikerun.entity.AuthUser;
+import ru.bacca.bikerun.security.detailService.UserPrinciple;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -52,7 +53,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         String token = JWT.create()
-                .withSubject(((User) authResult.getPrincipal()).getUsername()) // ?
+                .withSubject(((UserPrinciple) authResult.getPrincipal()).getUsername()) // ?
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // время жизни токена
                 .sign(HMAC512(SECRET.getBytes())); // алгоритм шифрования
         response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);

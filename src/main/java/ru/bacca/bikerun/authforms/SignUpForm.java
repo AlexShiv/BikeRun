@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-public class SingUpForm {
+public class SignUpForm {
 
     @NotBlank
     @Size(min = 3, max = 50)
