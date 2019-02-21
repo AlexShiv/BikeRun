@@ -1,10 +1,10 @@
 package ru.bacca.bikerun.controller;
 
-import ru.bacca.bikerun.entity.AbstractEntity;
-import ru.bacca.bikerun.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import ru.bacca.bikerun.entity.AbstractEntity;
+import ru.bacca.bikerun.service.GenericService;
 
 import java.util.List;
 

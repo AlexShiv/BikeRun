@@ -16,10 +16,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.bacca.bikerun.security.detailService.UserDetailServiceImpl;
-import ru.bacca.bikerun.security.detailService.jwt.JWTAuthenticationFilter;
 import ru.bacca.bikerun.security.detailService.jwt.JWTAuthorizationFilter;
 import ru.bacca.bikerun.security.detailService.jwt.JwtProvider;
 
+import static ru.bacca.bikerun.security.SecurityConstantas.SIGN_IN_URL;
 import static ru.bacca.bikerun.security.SecurityConstantas.SIGN_UP_URL;
 
 @Configuration
@@ -45,7 +45,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-                .antMatchers(HttpMethod.POST, "/auth/signin").permitAll()
+                .antMatchers(HttpMethod.POST, SIGN_IN_URL).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(authenticationJwtTokenFilterBean())

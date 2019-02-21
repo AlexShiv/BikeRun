@@ -13,7 +13,7 @@ spring:
     properties.hibernate.temp.use_jdbc_metadata_defaults: false
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       use-new-id-generator-mappings: true
 
 logging:
@@ -26,8 +26,8 @@ logging:
 security:
   jwt:
     token:
-      secret-key: SecretKeyToGenJWTs
-      expire-length: 3600000
+      secret-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+      expire-length: 864_000_000
 
 ru:
   baccasoft:

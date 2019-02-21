@@ -7,7 +7,10 @@ import java.util.List;
 public interface GenericService<T extends AbstractEntity> {
 
     List<T> getAll();
+
     T save(T obj);
+
     void delete(long id);
+
     T getById(long id);
 }
