@@ -16,12 +16,7 @@ spring:
       ddl-auto: none
       use-new-id-generator-mappings: true
 
-logging:
-  level:
-    org.springframework.web: ERROR
-    ru.baccasoft.bikerun: DEBUG
-  file: logs/application.log
-  file.max-size: 2MB
+
 
 security:
   jwt:
@@ -35,4 +30,3 @@ ru:
       excluded:
         - /auth/signin
         - /auth/signup
-

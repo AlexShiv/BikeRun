@@ -33,12 +33,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailServiceImpl userDetailService;
 
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-    public WebSecurity(UserDetailServiceImpl userDetailService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public WebSecurity(UserDetailServiceImpl userDetailService) {
         this.userDetailService = userDetailService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+
     }
 
     @Override
@@ -59,7 +60,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
 
@@ -75,6 +76,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Bean
     public JWTAuthorizationFilter authenticationJwtTokenFilterBean() throws Exception {
         return new JWTAuthorizationFilter(authenticationManagerBean());
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean

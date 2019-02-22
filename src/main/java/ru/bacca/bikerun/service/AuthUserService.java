@@ -30,6 +30,7 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
     @Autowired
     private JwtProvider jwtProvider;
 
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
