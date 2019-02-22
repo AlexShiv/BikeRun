@@ -14,10 +14,12 @@ import ru.bacca.bikerun.authforms.SignUpForm;
 import ru.bacca.bikerun.entity.AuthUser;
 import ru.bacca.bikerun.entity.Role;
 import ru.bacca.bikerun.repository.AuthUserRepository;
-import ru.bacca.bikerun.security.detailService.jwt.JwtProvider;
+import ru.bacca.bikerun.security.jwt.JwtProvider;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import static ru.bacca.bikerun.security.SecurityConstantas.TOKEN_PREFIX;
 
 @Service
 public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserRepository> {
@@ -99,6 +101,6 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = jwtProvider.generateJwtToken(authentication);
-        return ResponseEntity.ok("Bearer " + jwt);
+        return ResponseEntity.ok(TOKEN_PREFIX + jwt);
     }
 }

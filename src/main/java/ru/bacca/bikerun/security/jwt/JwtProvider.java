@@ -1,4 +1,4 @@
-package ru.bacca.bikerun.security.detailService.jwt;
+package ru.bacca.bikerun.security.jwt;
 
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;

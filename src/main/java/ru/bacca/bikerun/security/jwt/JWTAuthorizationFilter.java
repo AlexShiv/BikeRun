@@ -1,4 +1,4 @@
-package ru.bacca.bikerun.security.detailService.jwt;
+package ru.bacca.bikerun.security.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
