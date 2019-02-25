@@ -1,7 +1,8 @@
 package ru.bacca.bikerun.security.jwt;
 
 import io.jsonwebtoken.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import ru.bacca.bikerun.security.detailService.UserPrinciple;
@@ -12,7 +13,9 @@ import static ru.bacca.bikerun.security.SecurityConstantas.TOKEN_PREFIX;
 
 public class JwtProvider {
 
-    public static final Logger LOGGER = Logger.getLogger("jwt");
+    //    public static final Logger LOGGER = Logger.getLogger("jwt");
+    public static final Logger LOGGER = LogManager.getLogger(JwtProvider.class);
+
 
     @Value("${security.jwt.token.secret-key}")
     private String jwtSecret;

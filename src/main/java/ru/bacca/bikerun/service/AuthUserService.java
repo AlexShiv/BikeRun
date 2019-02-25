@@ -1,6 +1,7 @@
 package ru.bacca.bikerun.service;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ import static ru.bacca.bikerun.security.SecurityConstantas.TOKEN_PREFIX;
 @Service
 public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserRepository> {
 
-    public static final Logger LOGGER = Logger.getLogger("service");
+    public static final Logger LOGGER = LogManager.getLogger(AuthUserService.class);
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -57,6 +58,9 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
         if (existsByUsername(signUpForm.getUsername())) {
             return new ResponseEntity<>("Fail -> Username is already taken!",
                     HttpStatus.BAD_REQUEST);
+        } else {
+            ResponseEntity<String> message = checkUsernameAndPassword(signUpForm == null, signUpForm.getUsername(), signUpForm.getPassword());
+            if (message != null) return message;
         }
 
         // Creating auth user from form
@@ -95,7 +99,10 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
         return ResponseEntity.ok("User registrered successfully!");
     }
 
-    public ResponseEntity<String> signIn(LoginForm loginForm) {
+    public ResponseEntity signIn(LoginForm loginForm) {
+        ResponseEntity<String> message = checkUsernameAndPassword(loginForm == null, loginForm.getUsername(), loginForm.getPassword());
+        if (message != null) return message;
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginForm.getUsername(),
@@ -108,5 +115,15 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
         String jwt = jwtProvider.generateJwtToken(authentication);
         LOGGER.info("User authorized successfully!");
         return ResponseEntity.ok(TOKEN_PREFIX + jwt);
+    }
+
+    private ResponseEntity<String> checkUsernameAndPassword(boolean b, String username, String password) {
+        if (b || username == null || password == null) {
+            String message = "Username and password might not be null!";
+            LOGGER.error(message);
+            return new ResponseEntity<>(message,
+                    HttpStatus.BAD_REQUEST);
+        }
+        return null;
     }
 }
