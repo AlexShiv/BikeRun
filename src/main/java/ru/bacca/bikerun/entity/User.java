@@ -33,14 +33,6 @@ public class User extends AbstractEntity {
     @Column(name = "last_announcements_request")
     private Date lastAnnouncementsRequest;
 
-    /*public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }*/
-
     public String getPhone() {
         return phone;
     }

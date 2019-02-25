@@ -1,0 +1,75 @@
+<Configuration>
+
+    <Properties>
+        <Property name="logPath">D:\project\BikeRun\logs</Property>
+    </Properties>
+
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{HH:mm:ss:SSS} [%t] %-5level %logger{36} -%msg%n" />
+        </Console>
+        <!--JWT File Appender-->
+        <RollingFile
+                name="jwtAppender"
+                fileName="${logPath}\jwtLogs\jwt.log"
+                filePattern="${logPath}\jwtLogs\jwt-%d{dd-MM-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{dd-MM-yyyy HH:mm:ss,SSS} [%t] %-5p %c - %m%n"</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="2 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <!--Service File Appender-->
+        <RollingFile
+                name="serviceFileAppender"
+                fileName="${logPath}\serviceLogs\service.log"
+                filePattern="${logPath}\serviceLogs\service-%d{dd-MM-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{dd-MM-yyyy HH:mm:ss,SSS} [%t] %-5p %c - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="2 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile
+                name="exceptionFileAppender"
+                fileName="${logPath}\exceptionLogs\exceptions.log"
+                filePattern="${logPath}\exceptionLogs\exceptions-%d{dd-MM-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{dd-MM-yyyy HH:mm:ss,SSS} [%t] %-5p %c - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="2 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+
+
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="ru.bacca.bikerun.security.jwt" level="INFO" additivity="false">
+            <AppenderRef ref="jwtAppender"/>
+        </Logger>
+        <Logger name="ru.bacca.bikerun.service" level="INFO" additivity="false">
+            <AppenderRef ref="serviceFileAppender"/>
+        </Logger>
+        <Logger name="ru.bacca.bikerun.exceptionHandler" level="INFO" additivity="false">
+            <AppenderRef ref="exceptionFileAppender"/>
+        </Logger>
+    </Loggers>
+</Configuration>

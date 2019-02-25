@@ -13,14 +13,20 @@ spring:
     properties.hibernate.temp.use_jdbc_metadata_defaults: false
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       use-new-id-generator-mappings: true
 
-logging:
-  level:
-    org.springframework.web: ERROR
-    ru.baccasoft.bikerun: DEBUG
-  file: logs/application.log
-  file.max-size: 2MB
 
 
+security:
+  jwt:
+    token:
+      secret-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+      expire-length: 864_000_000
+
+ru:
+  baccasoft:
+    filter:
+      excluded:
+        - /auth/signin
+        - /auth/signup
