@@ -36,15 +36,15 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                                     FilterChain chain) throws IOException, ServletException {
 
         // получаем токен из хедера
-        String header = request.getHeader(HEADER_STRING);
+        String tokenFromHeader = request.getHeader(HEADER_STRING);
 
         // проверка токена на корректный префикс или на null
-        if (header == null || !header.startsWith(TOKEN_PREFIX)) {
+        if (tokenFromHeader == null || !tokenFromHeader.startsWith(TOKEN_PREFIX) || !tokenProvider.validateJwtToken(tokenFromHeader)) {
             chain.doFilter(request, response);
             return;
         }
 
-        String username = tokenProvider.getUserNameFromToken(header);
+        String username = tokenProvider.getUserNameFromToken(tokenFromHeader);
 
         // получаем пользователя по его логину
         UserDetails userDetails = userDetailService.loadUserByUsername(username);

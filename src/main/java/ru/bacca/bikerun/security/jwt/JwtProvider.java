@@ -1,17 +1,18 @@
 package ru.bacca.bikerun.security.jwt;
 
 import io.jsonwebtoken.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import ru.bacca.bikerun.security.detailService.UserPrinciple;
 
 import java.util.Date;
 
+import static ru.bacca.bikerun.security.SecurityConstantas.TOKEN_PREFIX;
+
 public class JwtProvider {
 
-    public static final Logger LOGGER = LogManager.getLogger(JwtProvider.class);
+    public static final Logger LOGGER = Logger.getLogger("jwt");
 
     @Value("${security.jwt.token.secret-key}")
     private String jwtSecret;
@@ -40,6 +41,7 @@ public class JwtProvider {
 
     public boolean validateJwtToken(String authToken) {
         try {
+            authToken = authToken.replace(TOKEN_PREFIX, "");
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException e) {
@@ -52,6 +54,9 @@ public class JwtProvider {
             LOGGER.error("Unsupported JWT token -> Message: {}", e);
         } catch (IllegalArgumentException e) {
             LOGGER.error("JWT claims string is empty -> Message: {}", e);
+        }
+        for (int i = 0; i < 100000; i++) {
+            LOGGER.info("SomeMesage " + i);
         }
 
         return false;

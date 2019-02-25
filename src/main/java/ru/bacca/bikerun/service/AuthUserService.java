@@ -1,5 +1,6 @@
 package ru.bacca.bikerun.service;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,8 @@ import static ru.bacca.bikerun.security.SecurityConstantas.TOKEN_PREFIX;
 
 @Service
 public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserRepository> {
+
+    public static final Logger LOGGER = Logger.getLogger("service");
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -88,6 +91,7 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
 
         save(authUser);
 
+        LOGGER.info("User registrered successfully!");
         return ResponseEntity.ok("User registrered successfully!");
     }
 
@@ -102,6 +106,7 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = jwtProvider.generateJwtToken(authentication);
+        LOGGER.info("User authorized successfully!");
         return ResponseEntity.ok(TOKEN_PREFIX + jwt);
     }
 }
