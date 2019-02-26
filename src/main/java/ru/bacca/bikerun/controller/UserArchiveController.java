@@ -17,7 +17,7 @@ public class UserArchiveController extends GenericController<UserArchive, UserAr
         super(service);
     }
 
-    @GetMapping("/ga")
+    @GetMapping("/secure-archive")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<UserArchive> getAllForCheckRole() {
         return getService().getAll();

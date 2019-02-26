@@ -10,6 +10,7 @@
             <PatternLayout
                     pattern="%d{HH:mm:ss:SSS} [%t] %-5level %logger{36} -%msg%n" />
         </Console>
+
         <!--JWT File Appender-->
         <RollingFile
                 name="jwtAppender"
@@ -41,6 +42,8 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
+
+        <!--Exception File Appender-->
         <RollingFile
                 name="exceptionFileAppender"
                 fileName="${logPath}\exceptionLogs\exceptions.log"
