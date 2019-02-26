@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,9 +16,12 @@ import ru.bacca.bikerun.authforms.LoginForm;
 import ru.bacca.bikerun.authforms.SignUpForm;
 import ru.bacca.bikerun.entity.AuthUser;
 import ru.bacca.bikerun.entity.Role;
+import ru.bacca.bikerun.exceptionHandler.exception.UsernamePasswordNullException;
 import ru.bacca.bikerun.repository.AuthUserRepository;
 import ru.bacca.bikerun.security.jwt.JwtProvider;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,8 +63,8 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
             return new ResponseEntity<>("Fail -> Username is already taken!",
                     HttpStatus.BAD_REQUEST);
         } else {
-            ResponseEntity<String> message = checkUsernameAndPassword(signUpForm == null, signUpForm.getUsername(), signUpForm.getPassword());
-            if (message != null) return message;
+            boolean flag = isUsernameOrPasswordNull(signUpForm == null, signUpForm.getUsername(), signUpForm.getPassword());
+            if (flag) throw new UsernamePasswordNullException();
         }
 
         // Creating auth user from form
@@ -100,8 +104,8 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
     }
 
     public ResponseEntity signIn(LoginForm loginForm) {
-        ResponseEntity<String> message = checkUsernameAndPassword(loginForm == null, loginForm.getUsername(), loginForm.getPassword());
-        if (message != null) return message;
+        boolean flag = isUsernameOrPasswordNull(loginForm == null, loginForm.getUsername(), loginForm.getPassword());
+        if (flag) throw new UsernamePasswordNullException();
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -117,13 +121,7 @@ public class AuthUserService extends GenericServiceImpl<AuthUser, AuthUserReposi
         return ResponseEntity.ok(TOKEN_PREFIX + jwt);
     }
 
-    private ResponseEntity<String> checkUsernameAndPassword(boolean b, String username, String password) {
-        if (b || username == null || password == null) {
-            String message = "Username and password might not be null!";
-            LOGGER.error(message);
-            return new ResponseEntity<>(message,
-                    HttpStatus.BAD_REQUEST);
-        }
-        return null;
+    private boolean isUsernameOrPasswordNull(boolean b, String username, String password) {
+        return b || username == null || password == null;
     }
 }
