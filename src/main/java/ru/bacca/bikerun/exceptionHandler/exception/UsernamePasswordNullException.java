@@ -1,4 +1,4 @@
 package ru.bacca.bikerun.exceptionHandler.exception;
 
-public class UsernamePasswordException extends RuntimeException {
+public class UsernamePasswordNullException extends RuntimeException {
 }

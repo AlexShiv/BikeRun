@@ -1,8 +1,6 @@
 package ru.bacca.bikerun.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -17,6 +15,18 @@ public class UserArchive extends AbstractEntity {
 
     @Column(name = "birthday")
     private Date birthday;
+
+    @ManyToOne
+    @JoinColumn(name = "address")
+    private Address address;
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
     public String getFirstName() {
         return firstName;
