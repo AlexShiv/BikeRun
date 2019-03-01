@@ -1,6 +1,7 @@
 package ru.bacca.bikerun.entity;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -14,19 +15,7 @@ public class UserArchive extends AbstractEntity {
     private String lastName;
 
     @Column(name = "birthday")
-    private Date birthday;
-
-    @ManyToOne
-    @JoinColumn(name = "address")
-    private Address address;
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
+    private String birthday;
 
     public String getFirstName() {
         return firstName;
@@ -44,11 +33,11 @@ public class UserArchive extends AbstractEntity {
         this.lastName = lastName;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 }

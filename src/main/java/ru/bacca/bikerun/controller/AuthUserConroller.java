@@ -28,10 +28,9 @@ public class AuthUserConroller extends GenericController<AuthUser, AuthUserServi
         return getService().signIn(loginForm);
     }
 
-    @Override
-    @GetMapping("/getall")
+    @GetMapping("/getall2")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<AuthUser> getAll() {
+    public List<AuthUser> getAll2() {
         return super.getAll();
     }
 }

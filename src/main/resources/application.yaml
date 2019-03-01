@@ -13,7 +13,7 @@ spring:
     properties.hibernate.temp.use_jdbc_metadata_defaults: false
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       use-new-id-generator-mappings: true
 
 
