@@ -12,9 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthUserConroller extends GenericController<AuthUser, AuthUserService> {
+public class AuthUserController extends GenericController<AuthUser, AuthUserService> {
 
-    public AuthUserConroller(AuthUserService service) {
+    public AuthUserController(AuthUserService service) {
         super(service);
     }
 
@@ -32,6 +32,6 @@ public class AuthUserConroller extends GenericController<AuthUser, AuthUserServi
     @GetMapping("/getall")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<AuthUser> getAll() {
-        return super.getAll();
+        return getService().getAll();
     }
 }
