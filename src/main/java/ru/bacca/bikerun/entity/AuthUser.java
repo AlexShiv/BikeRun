@@ -13,7 +13,7 @@ public class AuthUser extends AbstractEntity {
     @Column(name = "password")
     private String password;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(
