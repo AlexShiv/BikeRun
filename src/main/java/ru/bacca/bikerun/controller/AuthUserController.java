@@ -25,6 +25,7 @@ public class AuthUserController extends GenericController<AuthUser, AuthUserServ
 
     @PostMapping("/signin")
     public ResponseEntity<String> signIn(@RequestBody LoginForm loginForm) {
+        System.out.println();
         return getService().signIn(loginForm);
     }
 

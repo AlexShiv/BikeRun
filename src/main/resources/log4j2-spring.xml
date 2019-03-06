@@ -58,6 +58,22 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
+
+        <!--Controller File Appender-->
+        <RollingFile
+                name="controllerFileAppender"
+                fileName="${logPath}\controllerLogs\controllers.log"
+                filePattern="${logPath}\exceptionLogs\controllers-%d{dd-MM-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{dd-MM-yyyy HH:mm:ss,SSS} [%t] %-5p %c - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="2 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
     </Appenders>
 
 
@@ -73,6 +89,9 @@
         </Logger>
         <Logger name="ru.bacca.bikerun.exceptionHandler" level="INFO" additivity="false">
             <AppenderRef ref="exceptionFileAppender"/>
+        </Logger>
+        <Logger name="ru.bacca.bikerun.controller" level="INFO" additivity="false">
+            <AppenderRef ref="controllerFileAppender"/>
         </Logger>
     </Loggers>
 </Configuration>
