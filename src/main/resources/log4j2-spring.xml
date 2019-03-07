@@ -90,7 +90,7 @@
         <Logger name="ru.bacca.bikerun.exceptionHandler" level="INFO" additivity="false">
             <AppenderRef ref="exceptionFileAppender"/>
         </Logger>
-        <Logger name="ru.bacca.bikerun.controller" level="INFO" additivity="false">
+        <Logger name="ru.bacca.bikerun.controller" level="INFO" additivity="true">
             <AppenderRef ref="controllerFileAppender"/>
         </Logger>
     </Loggers>

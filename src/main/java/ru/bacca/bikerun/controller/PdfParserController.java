@@ -6,6 +6,7 @@ import com.documents4j.job.LocalConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,43 +35,39 @@ public class PdfParserController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> convertPdfToWord(ServletRequest servletRequest, ServletResponse servletResponse) throws IOException {
+    public ResponseEntity<String> convertPdfToWord(ServletRequest servletRequest) throws IOException, InterruptedException {
         LOGGER.info("Start converting pdf to word");
 
-        IConverter converter = LocalConverter.make();
-        converter.convert(servletRequest.getInputStream()).as(DocumentType.PDF)
-                .to(servletResponse.getOutputStream()).as(DocumentType.DOCX)
-                .execute();
-        LOGGER.info("Converting pdf to word is over");
-
-        Optional<String> result = readTextFromWord(servletResponse.getOutputStream());
-
-        return result.map(s -> new ResponseEntity<>(s, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
-    }
-
-    private Optional<String> readTextFromWord(OutputStream outputStream) {
+        Optional<String> result;
         try (PipedInputStream in = new PipedInputStream()) {
             try (PipedOutputStream out = new PipedOutputStream(in)) {
                 executor.execute(() -> {
                     try {
-
-                    } catch (Exception e) {
+                        IConverter converter = LocalConverter.make();
+                        converter.convert(servletRequest.getInputStream()).as(DocumentType.PDF)
+                                .to(out).as(DocumentType.DOCX)
+                                .execute();
+                        LOGGER.error("Converting...");
+                    } catch (IOException e) {
                         Thread t = Thread.currentThread();
                         t.getUncaughtExceptionHandler().uncaughtException(t, e);
+                        LOGGER.error("THREAD ERROR");
                     }
                 });
+                LOGGER.info("Converting pdf to word is over");
+                String p = "";
+                LOGGER.info("Reading document");
+                XWPFDocument docxFile = new XWPFDocument(in);
+                LOGGER.info("Reading document is over");
+                for (XWPFParagraph paragraph : docxFile.getParagraphs()) {
+                    p += paragraph.getText();
+                }
+                LOGGER.info(p);
+                result = Optional.of(p);
+
             }
-
-            XWPFDocument docxFile = new XWPFDocument(in);
-
-            String text = docxFile.getTables().get(0)
-                    .getRow(1)
-                    .getCell(1).getText();
-            return Optional.ofNullable(text);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return Optional.empty();
         }
+        return result.map(s -> new ResponseEntity<>(s, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 }
