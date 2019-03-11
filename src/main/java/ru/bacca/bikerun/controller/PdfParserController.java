@@ -7,18 +7,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 
@@ -27,47 +31,30 @@ import java.util.concurrent.Executor;
 public class PdfParserController {
 
     private static final Logger LOGGER = LogManager.getLogger(PdfParserController.class);
-    private final Executor executor;
-
-    @Autowired
-    public PdfParserController(@Qualifier("threadPoolTaskExecutor") Executor executor) {
-        this.executor = executor;
-    }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> convertPdfToWord(ServletRequest servletRequest) throws IOException, InterruptedException {
+    public ResponseEntity<HttpStatus> convertPdfToWord(ServletRequest servletRequest, ServletResponse servletResponse) throws IOException {
         LOGGER.info("Start converting pdf to word");
 
-        Optional<String> result;
-        try (PipedInputStream in = new PipedInputStream()) {
-            try (PipedOutputStream out = new PipedOutputStream(in)) {
-                executor.execute(() -> {
-                    try {
-                        IConverter converter = LocalConverter.make();
-                        converter.convert(servletRequest.getInputStream()).as(DocumentType.PDF)
-                                .to(out).as(DocumentType.DOCX)
-                                .execute();
-                        LOGGER.error("Converting...");
-                    } catch (IOException e) {
-                        Thread t = Thread.currentThread();
-                        t.getUncaughtExceptionHandler().uncaughtException(t, e);
-                        LOGGER.error("THREAD ERROR");
-                    }
-                });
-                LOGGER.info("Converting pdf to word is over");
-                String p = "";
-                LOGGER.info("Reading document");
-                XWPFDocument docxFile = new XWPFDocument(in);
-                LOGGER.info("Reading document is over");
-                for (XWPFParagraph paragraph : docxFile.getParagraphs()) {
-                    p += paragraph.getText();
-                }
-                LOGGER.info(p);
-                result = Optional.of(p);
-
-            }
-        }
-        return result.map(s -> new ResponseEntity<>(s, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+        IConverter converter = LocalConverter.make();
+        converter.convert(servletRequest.getInputStream()).as(DocumentType.PDF)
+                .to(servletResponse.getOutputStream()).as(DocumentType.DOCX)
+                .execute();
+        servletResponse.getOutputStream().close();
+        LOGGER.info("Converting pdf to word successful");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    /*public String readTextFromWord() {
+        try (FileInputStream fileInputStream = new FileInputStream(DOCX_PATH)) {
+            XWPFDocument docxFile = new XWPFDocument(fileInputStream);
+
+//            LOGGER.info(docxFile.getTables().get(0).getRow(1).getCell(1).getText());
+            docxFile.getParagraphs().forEach(xwpfParagraph -> LOGGER.info(xwpfParagraph.getText()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "BAD";
+        }
+        return "OK";
+    }*/
 }
