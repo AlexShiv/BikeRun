@@ -3,6 +3,11 @@ package ru.bacca.bikerun.controller;
 import com.documents4j.api.DocumentType;
 import com.documents4j.api.IConverter;
 import com.documents4j.job.LocalConverter;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.parser.LocationTextExtractionStrategy;
+import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
+import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -19,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import java.io.*;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 
@@ -33,20 +35,27 @@ public class PdfParserController {
     private static final Logger LOGGER = LogManager.getLogger(PdfParserController.class);
 
     @PostMapping("/upload")
-    public ResponseEntity<HttpStatus> convertPdfToWord(ServletRequest servletRequest, ServletResponse servletResponse) throws IOException {
+    public ResponseEntity<HttpStatus> convertPdfToWord(@RequestParam("file") MultipartFile file, ServletResponse servletResponse) throws IOException {
         LOGGER.info("Start converting pdf to word");
 
-        IConverter converter = LocalConverter.make();
-        converter.convert(servletRequest.getInputStream()).as(DocumentType.PDF)
+        /*servletResponse.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document; charset=windows-1251");
+        IConverter converter = LocalConverter.builder()
+                .build();
+
+        converter.convert(file.getInputStream()).as(DocumentType.PDF)
                 .to(servletResponse.getOutputStream()).as(DocumentType.DOCX)
                 .execute();
         servletResponse.getOutputStream().close();
-        LOGGER.info("Converting pdf to word successful");
+        LOGGER.info("Converting pdf to word successful");*/
+
+        // TODO: 11.03.2019
+        //  https://github.com/aspose-pdf/Aspose.PDF-for-Java/blob/master/Examples/src/main/java/com/aspose/pdf/examples/AsposePdfExamples/DocumentConversion/ConvertPDFToDOCOrDOCXFormat.java;
+        //  https://docs.aspose.com/display/pdfjava/Convert+PDF+to+other+Formats
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    /*public String readTextFromWord() {
-        try (FileInputStream fileInputStream = new FileInputStream(DOCX_PATH)) {
+    public String readTextFromWord() {
+        /*try (FileInputStream fileInputStream = new FileInputStream(DOCX_PATH)) {
             XWPFDocument docxFile = new XWPFDocument(fileInputStream);
 
 //            LOGGER.info(docxFile.getTables().get(0).getRow(1).getCell(1).getText());
@@ -54,7 +63,7 @@ public class PdfParserController {
         } catch (IOException e) {
             e.printStackTrace();
             return "BAD";
-        }
+        }*/
         return "OK";
-    }*/
+    }
 }
