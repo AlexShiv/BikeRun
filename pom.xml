@@ -212,6 +212,18 @@
             <artifactId>itextpdf</artifactId>
             <version>5.5.13</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-core -->
+        <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-core</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-local</artifactId>
+            <version>4.1.0</version>
+        </dependency>
 
     </dependencies>
 </project>

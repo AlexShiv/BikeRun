@@ -1,19 +1,15 @@
 package ru.bacca.bikerun.controller;
 
-import com.documents4j.api.DocumentType;
-import com.documents4j.api.IConverter;
-import com.documents4j.job.LocalConverter;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.LocationTextExtractionStrategy;
-import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
-import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
-import org.apache.commons.io.FileUtils;
+import com.itextpdf.text.DocumentException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.jodconverter.OfficeDocumentConverter;
+import org.jodconverter.document.DefaultDocumentFormatRegistry;
+import org.jodconverter.document.DocumentFormatRegistry;
+import org.jodconverter.document.SimpleDocumentFormatRegistry;
+import org.jodconverter.office.DefaultOfficeManagerBuilder;
+import org.jodconverter.office.OfficeException;
+import org.jodconverter.office.OfficeManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import java.io.*;
-import java.util.Optional;
-import java.util.concurrent.Executor;
+import java.io.File;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/file")
@@ -35,22 +28,25 @@ public class PdfParserController {
     private static final Logger LOGGER = LogManager.getLogger(PdfParserController.class);
 
     @PostMapping("/upload")
-    public ResponseEntity<HttpStatus> convertPdfToWord(@RequestParam("file") MultipartFile file, ServletResponse servletResponse) throws IOException {
+    public ResponseEntity<HttpStatus> convertPdfToWord(@RequestParam("file") MultipartFile file, ServletResponse servletResponse) throws IOException, DocumentException, DocumentException, OfficeException {
         LOGGER.info("Start converting pdf to word");
 
-        /*servletResponse.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document; charset=windows-1251");
-        IConverter converter = LocalConverter.builder()
-                .build();
+        // FIXME: 12.03.2019 
+        DefaultOfficeManagerBuilder configuration = new DefaultOfficeManagerBuilder();
+        configuration.setOfficeHome(new File("D:/Program Files/LibreOffice"));
 
-        converter.convert(file.getInputStream()).as(DocumentType.PDF)
-                .to(servletResponse.getOutputStream()).as(DocumentType.DOCX)
-                .execute();
-        servletResponse.getOutputStream().close();
-        LOGGER.info("Converting pdf to word successful");*/
+        OfficeManager officeManager = configuration.build();
+        officeManager.start();
+        DocumentFormatRegistry formatRegistry = new SimpleDocumentFormatRegistry();
+        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager, formatRegistry);
 
-        // TODO: 11.03.2019
-        //  https://github.com/aspose-pdf/Aspose.PDF-for-Java/blob/master/Examples/src/main/java/com/aspose/pdf/examples/AsposePdfExamples/DocumentConversion/ConvertPDFToDOCOrDOCXFormat.java;
-        //  https://docs.aspose.com/display/pdfjava/Convert+PDF+to+other+Formats
+        try {
+            converter.convert(inputFile, outputFile);
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            officeManager.stop();
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
