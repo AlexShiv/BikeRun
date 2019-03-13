@@ -1,15 +1,10 @@
 package ru.bacca.bikerun.controller;
 
-import com.itextpdf.text.DocumentException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jodconverter.OfficeDocumentConverter;
-import org.jodconverter.document.DefaultDocumentFormatRegistry;
-import org.jodconverter.document.DocumentFormatRegistry;
-import org.jodconverter.document.SimpleDocumentFormatRegistry;
-import org.jodconverter.office.DefaultOfficeManagerBuilder;
-import org.jodconverter.office.OfficeException;
-import org.jodconverter.office.OfficeManager;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.text.PDFTextStripperByArea;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,9 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.ServletResponse;
-import java.io.File;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/file")
@@ -28,24 +27,26 @@ public class PdfParserController {
     private static final Logger LOGGER = LogManager.getLogger(PdfParserController.class);
 
     @PostMapping("/upload")
-    public ResponseEntity<HttpStatus> convertPdfToWord(@RequestParam("file") MultipartFile file, ServletResponse servletResponse) throws IOException, DocumentException, DocumentException, OfficeException {
+    public ResponseEntity<HttpStatus> convertPdfToWord(@RequestParam("file") MultipartFile file, ServletResponse servletResponse) throws IOException {
         LOGGER.info("Start converting pdf to word");
 
-        // FIXME: 12.03.2019 
-        DefaultOfficeManagerBuilder configuration = new DefaultOfficeManagerBuilder();
-        configuration.setOfficeHome(new File("D:/Program Files/LibreOffice"));
+        PDDocument document = PDDocument.load(file.getInputStream());
+        PDPage page = document.getDocumentCatalog().getPages().get(0);
+        PdfBoxFinder boxFinder = new PdfBoxFinder(page);
+        boxFinder.processPage(page);
 
-        OfficeManager officeManager = configuration.build();
-        officeManager.start();
-        DocumentFormatRegistry formatRegistry = new SimpleDocumentFormatRegistry();
-        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager, formatRegistry);
+        PDFTextStripperByArea stripperByArea = new PDFTextStripperByArea();
+        for (Map.Entry<String, Rectangle2D> entry : boxFinder.getRegions().entrySet()) {
+            stripperByArea.addRegion(entry.getKey(), entry.getValue());
+        }
 
-        try {
-            converter.convert(inputFile, outputFile);
-        } catch (Exception e){
-            e.printStackTrace();
-        } finally {
-            officeManager.stop();
+        stripperByArea.extractRegions(page);
+        List<String> names = stripperByArea.getRegions();
+        names.sort(null);
+        Map<String, String> table = new HashMap<>();
+        for (String name : names) {
+//            table.put(name, stripperByArea.getTextForRegion(name));
+            LOGGER.info(name + "\t" + stripperByArea.getTextForRegion(name));
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
